@@ -1,0 +1,93 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    #sidenav
+    mode="side"
+    [opened]="true"
+    class="sidenav"
+    [class.collapsed]="!opened"
+  >
+    <mat-toolbar>
+      @if (opened) {
+      <span>SEINFRA</span>
+      }
+      <div class="toggle-container">
+        <button
+          mat-icon-button
+          (click)="toggleSidenav()"
+          class="menu-toggle-button"
+        >
+          <mat-icon>{{ opened ? "arrow_back_ios" : "menu" }}</mat-icon>
+        </button>
+      </div>
+    </mat-toolbar>
+
+    <div class="nav-items-container">
+      <a class="nav-item" routerLink="/perfil">
+        <div class="icon-container">
+          <mat-icon>account_circle</mat-icon>
+        </div>
+        @if (opened) {
+        <span class="nav-text">Perfil</span>
+        }
+      </a>
+
+      <a class="nav-item" routerLink="/overview">
+        <div class="icon-container">
+          <mat-icon>dashboards</mat-icon>
+        </div>
+        @if (opened) {
+        <span class="nav-text">Visão geral</span>
+        }
+      </a>
+
+      <a class="nav-item" routerLink="/departaments">
+        <div class="icon-container">
+          <mat-icon>domain</mat-icon>
+        </div>
+        @if (opened) {
+        <span class="nav-text">Departamentos</span>
+        }
+      </a>
+
+      <a class="nav-item" routerLink="/user-management">
+        <div class="icon-container">
+          <mat-icon>supervised_user_circle</mat-icon>
+        </div>
+        @if (opened) {
+        <span class="nav-text">Gerenciar usuários</span>
+        }
+      </a>
+
+      <a class="nav-item" routerLink="/demands">
+        <div class="icon-container">
+          <mat-icon>list_alt</mat-icon>
+        </div>
+        @if (opened) {
+        <span class="nav-text">Demandas</span>
+        }
+      </a>
+
+      <a class="nav-item" routerLink="/configuracoes">
+        <div class="icon-container">
+          <mat-icon>settings</mat-icon>
+        </div>
+        @if (opened) {
+        <span class="nav-text">Configurações</span>
+        }
+      </a>
+
+      <a class="nav-item" (click)="logout()">
+        <div class="icon-container">
+          <mat-icon>exit_to_app</mat-icon>
+        </div>
+        @if (opened) {
+        <span class="nav-text">Sair</span>
+        }
+      </a>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content [style.marginLeft.px]="contentMargin">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,117 @@
+$sidebar-width: 250px;
+$collapsed-width: 64px;
+$bg-color: #fff;
+$text-color: #000;
+$hover-bg-color: #f5f5f5;
+$box-shadow: 0px 4px 10px 2px #00000040;
+$transition: 0.3s ease;
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin transition($property) {
+  transition: $property $transition;
+}
+
+.sidenav-container {
+  height: 100vh;
+  position: relative;
+}
+
+mat-sidenav-container {
+  height: 100%;
+}
+
+mat-sidenav {
+  width: $sidebar-width;
+  background-color: $bg-color;
+  color: $text-color;
+  box-shadow: $box-shadow;
+  overflow-x: hidden;
+  @include transition(width);
+
+  &.collapsed {
+    width: $collapsed-width;
+  }
+
+  mat-toolbar {
+    display: flex;
+    justify-content: space-between;
+    background-color: $bg-color;
+    color: $text-color;
+    min-height: 56px;
+    padding: 0 16px;
+
+    span {
+      font-weight: bold;
+    }
+  }
+
+  .toggle-container {
+    @include flex-center;
+    padding: 8px 0;
+  }
+
+  .menu-toggle-button {
+    @include flex-center;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+
+  .nav-items-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: $text-color;
+    transition: background-color 0.2s ease-in-out;
+
+    &:hover {
+      background-color: $hover-bg-color;
+    }
+
+    .icon-container {
+      @include flex-center;
+      width: 24px;
+      height: 24px;
+    }
+
+    .nav-text {
+      margin-left: 16px;
+    }
+  }
+
+  &.collapsed {
+    .nav-item {
+      justify-content: center;
+      padding: 12px 0;
+
+      .nav-text {
+        display: none;
+      }
+    }
+
+    mat-toolbar {
+      justify-content: center;
+      padding: 0;
+
+      span {
+        display: none;
+      }
+    }
+  }
+}
+
+mat-sidenav-content {
+  @include transition(margin-left);
+}

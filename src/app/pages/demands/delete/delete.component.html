@@ -1,0 +1,14 @@
+<div class="delete">
+  <h2 mat-dialog-title>Confirmar Exclusão</h2>
+  <mat-dialog-content>
+    <p>
+      Tem certeza que deseja excluir o usuário
+      <strong>{{ data.userName }}</strong
+      >?
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()">Cancelar</button>
+    <button mat-raised-button color="warn" (click)="confirm()">Excluir</button>
+  </mat-dialog-actions>
+</div>

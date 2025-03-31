@@ -1,0 +1,57 @@
+<div class="login">
+  <app-panel [width]="'600px'" [height]="'500px'">
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
+      <h2>Login</h2>
+
+      <div class="input-field">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            type="email"
+            placeholder="Digite seu email"
+            formControlName="email"
+          />
+          @if (loginForm.get('email')?.invalid &&
+          loginForm.get('email')?.touched) {
+          <mat-error>Email inválido</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Senha</mat-label>
+          <input
+            matInput
+            type="password"
+            placeholder="Digite sua senha"
+            formControlName="password"
+          />
+          @if (loginForm.get('password')?.invalid &&
+          loginForm.get('password')?.touched) {
+          <mat-error>A senha deve ter pelo menos 6 caracteres</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="loginForm.invalid"
+        class="full-width"
+      >
+        Entrar
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="register()"
+        [disabled]="loginForm.invalid"
+        class="full-width"
+        type="button"
+      >
+        Cadastrar
+      </button>
+    </form>
+  </app-panel>
+</div>

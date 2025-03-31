@@ -1,0 +1,197 @@
+<div class="overview-container">
+  <div class="overview-header">
+    <h1 class="overview-title">Visão geral de Demandas</h1>
+    <div class="filters-container">
+      <mat-form-field appearance="outline" class="filter">
+        <mat-label>Departamento</mat-label>
+        <mat-select
+          [(ngModel)]="filtroSelecionado"
+          (selectionChange)="onFilterChange()"
+        >
+          <mat-option value="todos">Todos</mat-option>
+          <mat-option value="ti">TI</mat-option>
+          <mat-option value="rh">RH</mat-option>
+          <mat-option value="financeiro">Financeiro</mat-option>
+          <mat-option value="marketing">Marketing</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter">
+        <mat-label>Período</mat-label>
+        <mat-select
+          [(ngModel)]="periodoSelecionado"
+          (selectionChange)="onPeriodChange()"
+        >
+          <mat-option value="semana">Última Semana</mat-option>
+          <mat-option value="mes">Último Mês</mat-option>
+          <mat-option value="trimestre">Último Trimestre</mat-option>
+          <mat-option value="ano">Último Ano</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="summary-cards">
+    <div class="summary-card total">
+      <div class="card-icon">
+        <mat-icon>assignment</mat-icon>
+      </div>
+      <div class="card-content">
+        <h2>Total de Demandas</h2>
+        <div class="card-value">{{ demandaSummary.total }}</div>
+      </div>
+    </div>
+
+    <div class="summary-card concluidas">
+      <div class="card-icon">
+        <mat-icon>check_circle</mat-icon>
+      </div>
+      <div class="card-content">
+        <h2>Concluídas</h2>
+        <div class="card-value">{{ demandaSummary.concluidas }}</div>
+      </div>
+    </div>
+
+    <div class="summary-card em-andamento">
+      <div class="card-icon">
+        <mat-icon>autorenew</mat-icon>
+      </div>
+      <div class="card-content">
+        <h2>Em Andamento</h2>
+        <div class="card-value">{{ demandaSummary.emAndamento }}</div>
+      </div>
+    </div>
+
+    <div class="summary-card pendentes">
+      <div class="card-icon">
+        <mat-icon>pending</mat-icon>
+      </div>
+      <div class="card-content">
+        <h2>Pendentes</h2>
+        <div class="card-value">{{ demandaSummary.pendentes }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="kpi-cards">
+    <mat-card class="kpi-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>schedule</mat-icon>
+        <mat-card-title>Tempo Médio de Resolução</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="kpi-value">{{ kpis.tempoMedioResolucao }} dias</div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="kpi-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>pie_chart</mat-icon>
+        <mat-card-title>Demandas Concluídas</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="kpi-value">{{ kpis.percentualConcluidas }}%</div>
+        <mat-progress-bar
+          mode="determinate"
+          [value]="kpis.percentualConcluidas"
+        ></mat-progress-bar>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="kpi-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>verified</mat-icon>
+        <mat-card-title>SLAs Atendidos</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="kpi-value">{{ kpis.slaAtendidos }}%</div>
+        <mat-progress-bar
+          mode="determinate"
+          [value]="kpis.slaAtendidos"
+          [color]="
+            kpis.slaAtendidos > 90
+              ? 'primary'
+              : kpis.slaAtendidos > 75
+              ? 'accent'
+              : 'warn'
+          "
+        >
+        </mat-progress-bar>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="kpi-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>trending_up</mat-icon>
+        <mat-card-title>Demandas por Dia</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="kpi-value">{{ kpis.demandasPorDia }}</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <mat-card class="alerts-card">
+    <mat-card-header>
+      <mat-card-title>Alertas em Tempo Real</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="alerts-list">
+        <div
+          *ngFor="let alerta of alertas"
+          class="alert-item"
+          [ngClass]="getSeveridadeClass(alerta.severidade)"
+        >
+          <div class="alert-icon">
+            <mat-icon>warning</mat-icon>
+          </div>
+          <div class="alert-content">
+            <div class="alert-title">{{ alerta.tipo }}</div>
+            <div class="alert-badge">
+              <span class="badge">{{ alerta.quantidade }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="charts-container">
+    <div class="chart-card">
+      <h2>Distribuição por Status</h2>
+      <div class="chart-wrapper">
+        <canvas id="graficoPizza"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h2>Comparação de Status</h2>
+      <div class="chart-wrapper">
+        <canvas id="graficoBarras"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-container">
+    <div class="chart-card">
+      <h2>Demandas por Departamento</h2>
+      <div class="chart-wrapper">
+        <canvas id="graficoDepartamentos"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h2>Demandas por Prioridade</h2>
+      <div class="chart-wrapper">
+        <canvas id="graficoPrioridades"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card full-width">
+    <h2>Evolução de Demandas ao Longo do Tempo</h2>
+    <div class="chart-wrapper">
+      <canvas id="graficoLinha"></canvas>
+    </div>
+  </div>
+</div>
