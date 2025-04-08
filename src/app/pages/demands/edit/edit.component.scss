@@ -1,21 +1,48 @@
-.edit {
-    display: flex;
-    flex-direction: column;
-    padding: 25px;
-
-    .input-field {
-        display: flex;
+/* edit-demand.component.scss */
+.edit-demand {
+    padding: 16px;
+    
+    h2 {
+      margin-bottom: 24px;
+      text-align: center;
+      color: #3f51b5;
+    }
+    
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .input-row {
+      display: flex;
+      gap: 16px;
+      
+      @media (max-width: 768px) {
         flex-direction: column;
-        gap: 10px;
+      }
+      
+      .mat-form-field {
+        flex: 1;
+      }
     }
-
-    .input-group {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-    }
-
+    
     .full-width {
-        width: 70%;
+      width: 100%;
     }
-}
+    
+    .approval-section {
+      align-items: center;
+      
+      .checkbox-container {
+        margin-right: 16px;
+        min-width: 120px;
+      }
+    }
+    
+    mat-dialog-actions {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #e0e0e0;
+    }
+  }

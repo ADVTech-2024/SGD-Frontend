@@ -50,6 +50,12 @@ interface TimeSeriesData {
   pendentes: number;
 }
 
+interface Funcionario {
+  id: number;
+  nome: string;
+  departamento: string;
+}
+
 @Component({
   selector: 'app-overview',
   standalone: true,
@@ -89,7 +95,44 @@ export class OverviewComponent implements OnInit {
   timeSeriesData: TimeSeriesData[] = [];
 
   filtroSelecionado: string = 'todos';
+  zonaSelecionada: string = 'todas';
+  bairroSelecionado: string = 'todos';
+  funcionarioSelecionado: string = 'todos';
   periodoSelecionado: string = 'mes';
+
+  bairrosUrbanos: string[] = [
+    'Emília Costa',
+    'Polivalente',
+    'Centro',
+    'Beira Rio',
+    '2 de julho',
+    'Renovação',
+    'Teotônio Calheira',
+    'Eliseu Leal',
+    'Leonel',
+    'Jardim Gandu'
+  ];
+
+  bairrosRurais: string[] = [
+    'Monte alegre',
+    'Baixa alegre',
+    'Brongo',
+    'Água preta',
+    'Taararanga',
+    'Paó',
+    'Jericó'
+  ];
+
+  bairrosDisponiveis: string[] = [];
+
+  funcionarios: Funcionario[] = [
+    { id: 1, nome: 'João Silva', departamento: 'Obras' },
+    { id: 2, nome: 'Maria Oliveira', departamento: 'Saúde' },
+    { id: 3, nome: 'Pedro Santos', departamento: 'Educação' },
+    { id: 4, nome: 'Ana Souza', departamento: 'Segurança' },
+    { id: 5, nome: 'Carlos Pereira', departamento: 'Administração' },
+    { id: 6, nome: 'Juliana Lima', departamento: 'Meio Ambiente' }
+  ];
 
   chartColors = {
     concluidas: 'rgba(76, 175, 80, 0.7)',
@@ -100,10 +143,14 @@ export class OverviewComponent implements OnInit {
     borderPendentes: 'rgba(255, 99, 132, 1)'
   };
 
+  chartInstances: { [key: string]: Chart } = {};
+
   constructor() { }
 
   ngOnInit(): void {
     this.carregarDadosMock();
+
+    this.bairrosDisponiveis = [...this.bairrosUrbanos, ...this.bairrosRurais].sort();
 
     setTimeout(() => {
       this.renderizarGraficoPizza();
@@ -137,11 +184,14 @@ export class OverviewComponent implements OnInit {
     ];
 
     this.departmentData = [
-      { name: 'TI', value: 45 },
-      { name: 'RH', value: 28 },
-      { name: 'Financeiro', value: 32 },
-      { name: 'Marketing', value: 15 }
+      { name: 'Obras', value: 45 },
+      { name: 'Saúde', value: 28 },
+      { name: 'Educação', value: 32 },
+      { name: 'Segurança', value: 20 },
+      { name: 'Administração', value: 18 },
+      { name: 'Meio Ambiente', value: 15 }
     ];
+
 
     this.priorityData = [
       { name: 'Alta', value: 38 },
@@ -163,7 +213,7 @@ export class OverviewComponent implements OnInit {
     const ctx = document.getElementById('graficoPizza') as HTMLCanvasElement;
     if (!ctx) return;
 
-    new Chart(ctx, {
+    this.chartInstances['pizza'] = new Chart(ctx, {
       type: 'pie',
       data: {
         labels: ['Concluídas', 'Em Andamento', 'Pendentes'],
@@ -206,7 +256,7 @@ export class OverviewComponent implements OnInit {
     const ctx = document.getElementById('graficoBarras') as HTMLCanvasElement;
     if (!ctx) return;
 
-    new Chart(ctx, {
+    this.chartInstances['barras'] = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: ['Concluídas', 'Em Andamento', 'Pendentes'],
@@ -251,7 +301,7 @@ export class OverviewComponent implements OnInit {
     const ctx = document.getElementById('graficoLinha') as HTMLCanvasElement;
     if (!ctx) return;
 
-    new Chart(ctx, {
+    this.chartInstances['linha'] = new Chart(ctx, {
       type: 'line',
       data: {
         labels: this.timeSeriesData.map(item => item.name),
@@ -314,7 +364,7 @@ export class OverviewComponent implements OnInit {
     const ctx = document.getElementById('graficoDepartamentos') as HTMLCanvasElement;
     if (!ctx) return;
 
-    new Chart(ctx, {
+    this.chartInstances['departamentos'] = new Chart(ctx, {
       type: 'doughnut',
       data: {
         labels: this.departmentData.map(item => item.name),
@@ -355,7 +405,7 @@ export class OverviewComponent implements OnInit {
     const ctx = document.getElementById('graficoPrioridades') as HTMLCanvasElement;
     if (!ctx) return;
 
-    new Chart(ctx, {
+    this.chartInstances['prioridades'] = new Chart(ctx, {
       type: 'polarArea',
       data: {
         labels: this.priorityData.map(item => item.name),
@@ -385,14 +435,153 @@ export class OverviewComponent implements OnInit {
     });
   }
 
-  buscarDadosDemandas(): void {
+  onZonaChange(): void {
+    if (this.zonaSelecionada === 'urbana') {
+      this.bairrosDisponiveis = [...this.bairrosUrbanos];
+    } else if (this.zonaSelecionada === 'rural') {
+      this.bairrosDisponiveis = [...this.bairrosRurais];
+    } else {
+      this.bairrosDisponiveis = [...this.bairrosUrbanos, ...this.bairrosRurais].sort();
+    }
 
+    this.bairroSelecionado = 'todos';
+
+    this.onFilterChange();
   }
 
   onFilterChange(): void {
+    this.atualizarDadosFiltrados();
   }
 
   onPeriodChange(): void {
+    // Atualizar dados com base no período selecionado
+    this.atualizarDadosFiltrados();
+  }
+
+  atualizarDadosFiltrados(): void {
+    this.simularFiltragem();
+    this.atualizarGraficos();
+  }
+
+  simularFiltragem(): void {
+    let fatorMultiplicador = 1.0;
+
+    if (this.filtroSelecionado !== 'todos') {
+      fatorMultiplicador *= 0.7;
+    }
+
+    if (this.zonaSelecionada === 'urbana') {
+      fatorMultiplicador *= 0.85;
+    } else if (this.zonaSelecionada === 'rural') {
+      fatorMultiplicador *= 0.65;
+    }
+
+    if (this.bairroSelecionado !== 'todos') {
+      fatorMultiplicador *= 0.5;
+    }
+
+    if (this.funcionarioSelecionado !== 'todos') {
+      fatorMultiplicador *= 0.4;
+    }
+
+    if (this.periodoSelecionado === 'semana') {
+      fatorMultiplicador *= 0.3;
+    } else if (this.periodoSelecionado === 'mes') {
+      fatorMultiplicador *= 0.7;
+    } else if (this.periodoSelecionado === 'trimestre') {
+      fatorMultiplicador *= 0.85;
+    }
+
+    const total = Math.round(120 * fatorMultiplicador);
+    const concluidas = Math.round(25 * fatorMultiplicador);
+    const emAndamento = Math.round(55 * fatorMultiplicador);
+    const pendentes = Math.round(40 * fatorMultiplicador);
+
+    this.demandaSummary = {
+      total,
+      concluidas,
+      emAndamento,
+      pendentes
+    };
+
+    this.kpis = {
+      tempoMedioResolucao: parseFloat((3.2 * (0.8 + Math.random() * 0.4)).toFixed(1)),
+      percentualConcluidas: ((concluidas / total) * 100).toFixed(1),
+      demandasPorDia: parseFloat((8.5 * fatorMultiplicador).toFixed(1)),
+      slaAtendidos: Math.round(87 * (0.8 + Math.random() * 0.4)),
+      taxaReabertura: Math.round(12 * (0.8 + Math.random() * 0.4))
+    };
+
+    this.departmentData = [
+      { name: 'Obras', value: 45 },
+      { name: 'Saúde', value: 28 },
+      { name: 'Educação', value: 32 },
+      { name: 'Segurança', value: 20 },
+      { name: 'Administração', value: 18 },
+      { name: 'Meio Ambiente', value: 15 }
+    ];
+
+
+    this.priorityData = [
+      { name: 'Alta', value: Math.round(38 * fatorMultiplicador) },
+      { name: 'Média', value: Math.round(52 * fatorMultiplicador) },
+      { name: 'Baixa', value: Math.round(30 * fatorMultiplicador) }
+    ];
+
+    this.timeSeriesData = this.timeSeriesData.map(item => {
+      return {
+        name: item.name,
+        concluidas: Math.round(item.concluidas * fatorMultiplicador),
+        emAndamento: Math.round(item.emAndamento * fatorMultiplicador),
+        pendentes: Math.round(item.pendentes * fatorMultiplicador)
+      };
+    });
+
+    this.alertas = [
+      { tipo: 'Atraso', quantidade: Math.round(12 * fatorMultiplicador), severidade: 'alta' },
+      { tipo: 'Ociosidade', quantidade: Math.round(8 * fatorMultiplicador), severidade: 'media' },
+      { tipo: 'Não Conformidade', quantidade: Math.round(5 * fatorMultiplicador), severidade: 'baixa' }
+    ];
+  }
+
+  atualizarGraficos(): void {
+    if (this.chartInstances['pizza']) {
+      this.chartInstances['pizza'].data.datasets[0].data = [
+        this.demandaSummary.concluidas,
+        this.demandaSummary.emAndamento,
+        this.demandaSummary.pendentes
+      ];
+      this.chartInstances['pizza'].update();
+    }
+
+    if (this.chartInstances['barras']) {
+      this.chartInstances['barras'].data.datasets[0].data = [
+        this.demandaSummary.concluidas,
+        this.demandaSummary.emAndamento,
+        this.demandaSummary.pendentes
+      ];
+      this.chartInstances['barras'].update();
+    }
+
+    if (this.chartInstances['departamentos']) {
+      this.chartInstances['departamentos'].data.labels = this.departmentData.map(item => item.name);
+      this.chartInstances['departamentos'].data.datasets[0].data = this.departmentData.map(item => item.value);
+      this.chartInstances['departamentos'].update();
+    }
+
+    if (this.chartInstances['prioridades']) {
+      this.chartInstances['prioridades'].data.labels = this.priorityData.map(item => item.name);
+      this.chartInstances['prioridades'].data.datasets[0].data = this.priorityData.map(item => item.value);
+      this.chartInstances['prioridades'].update();
+    }
+
+    if (this.chartInstances['linha']) {
+      this.chartInstances['linha'].data.labels = this.timeSeriesData.map(item => item.name);
+      this.chartInstances['linha'].data.datasets[0].data = this.timeSeriesData.map(item => item.concluidas);
+      this.chartInstances['linha'].data.datasets[1].data = this.timeSeriesData.map(item => item.emAndamento);
+      this.chartInstances['linha'].data.datasets[2].data = this.timeSeriesData.map(item => item.pendentes);
+      this.chartInstances['linha'].update();
+    }
   }
 
   getSeveridadeClass(severidade: string): string {

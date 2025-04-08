@@ -1,0 +1,64 @@
+<div class="department-head-edit">
+  <form [formGroup]="demandForm" (ngSubmit)="submitForm()">
+    <h2>Gerenciar Demanda</h2>
+
+    <div class="demand-details">
+      <h3>Informações da Demanda</h3>
+      <p><strong>Solicitante:</strong> {{ data.requestorName }}</p>
+      <p><strong>Departamento:</strong> {{ data.department }}</p>
+      <p>
+        <strong>Bairro/Região:</strong> {{ data.neighborhood }} ({{
+          data.zone
+        }})
+      </p>
+      <p><strong>Descrição:</strong> {{ data.description }}</p>
+    </div>
+
+    <div class="form-container">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          @for (status of statuses; track status) {
+          <mat-option [value]="status">{{ status }}</mat-option>
+          }
+        </mat-select>
+        @if (demandForm.get('status')?.invalid &&
+        demandForm.get('status')?.touched) {
+        <mat-error>Status é obrigatório</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="approval-section">
+        <mat-checkbox formControlName="approved">Aprovar Demanda</mat-checkbox>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Justificativa (Obrigatória se não aprovada)</mat-label>
+        <textarea
+          matInput
+          rows="3"
+          placeholder="Justifique a não aprovação"
+          formControlName="justification"
+        ></textarea>
+        @if (demandForm.get('justification')?.invalid &&
+        demandForm.get('justification')?.touched) {
+        <mat-error
+          >Justificativa é obrigatória para demandas não aprovadas</mat-error
+        >
+        }
+      </mat-form-field>
+    </div>
+
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="close()">Cancelar</button>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="demandForm.invalid"
+      >
+        Salvar
+      </button>
+    </mat-dialog-actions>
+  </form>
+</div>

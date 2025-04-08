@@ -1,72 +1,173 @@
-<div class="edit">
-  <form [formGroup]="userForm" (ngSubmit)="submitForm()">
-    <h2>Editar Usuário</h2>
+<div class="edit-demand">
+  <form [formGroup]="demandForm" (ngSubmit)="submitForm()">
+    <h2>Editar Demanda</h2>
 
-    <div class="input-field">
-      <div class="input-group">
+    <div class="form-container">
+      <div class="input-row">
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Nome</mat-label>
-          <input matInput placeholder="Digite o nome" formControlName="name" />
-          @if (userForm.get('name')?.invalid && userForm.get('name')?.touched) {
+          <mat-label>Nome do Solicitante</mat-label>
+          <input
+            matInput
+            placeholder="Digite o nome do solicitante"
+            formControlName="requestorName"
+          />
+          @if (demandForm.get('requestorName')?.invalid &&
+          demandForm.get('requestorName')?.touched) {
           <mat-error>O nome deve ter pelo menos 3 caracteres</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Departamento</mat-label>
+          <mat-label>Departamento/Responsável</mat-label>
+          <mat-select formControlName="department">
+            @for (dept of departments; track dept) {
+            <mat-option [value]="dept">{{ dept }}</mat-option>
+            }
+          </mat-select>
+          @if (demandForm.get('department')?.invalid &&
+          demandForm.get('department')?.touched) {
+          <mat-error>Departamento é obrigatório</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Origem</mat-label>
           <input
             matInput
-            placeholder="Digite o departamento"
-            formControlName="department"
+            placeholder="Digite a origem da demanda"
+            formControlName="origin"
           />
-          @if (userForm.get('department')?.invalid &&
-          userForm.get('department')?.touched) {
-          <mat-error>Departamento é obrigatório</mat-error>
+          @if (demandForm.get('origin')?.invalid &&
+          demandForm.get('origin')?.touched) {
+          <mat-error>Origem é obrigatória</mat-error>
           }
         </mat-form-field>
       </div>
 
-      <div class="input-group">
+      <div class="input-row">
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Telefone</mat-label>
-          <input
-            matInput
-            type="tel"
-            placeholder="Digite o telefone"
-            formControlName="phone"
-          />
-          @if (userForm.get('phone')?.invalid && userForm.get('phone')?.touched)
-          {
-          <mat-error>Telefone inválido</mat-error>
+          <mat-label>Zona</mat-label>
+          <mat-select formControlName="zone">
+            @for (zone of zones; track zone) {
+            <mat-option [value]="zone">{{ zone }}</mat-option>
+            }
+          </mat-select>
+          @if (demandForm.get('zone')?.invalid &&
+          demandForm.get('zone')?.touched) {
+          <mat-error>Zona é obrigatória</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
+          <mat-label>Bairro/Região</mat-label>
+          <mat-select formControlName="neighborhood">
+            @for (neighborhood of availableNeighborhoods; track neighborhood) {
+            <mat-option [value]="neighborhood">{{ neighborhood }}</mat-option>
+            }
+          </mat-select>
+          @if (demandForm.get('neighborhood')?.invalid &&
+          demandForm.get('neighborhood')?.touched) {
+          <mat-error>Bairro/Região é obrigatório</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Endereço</mat-label>
           <input
             matInput
-            type="email"
-            placeholder="Digite o email"
-            formControlName="email"
+            placeholder="Digite o endereço completo"
+            formControlName="address"
           />
-          @if (userForm.get('email')?.invalid && userForm.get('email')?.touched)
-          {
-          <mat-error>Email inválido</mat-error>
+          @if (demandForm.get('address')?.invalid &&
+          demandForm.get('address')?.touched) {
+          <mat-error>Endereço é obrigatório</mat-error>
           }
         </mat-form-field>
       </div>
 
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Permissão</mat-label>
-        <mat-select formControlName="permission">
-          @for (perm of permissions; track perm) {
-          <mat-option [value]="perm">{{ perm }}</mat-option>
-          }
-        </mat-select>
-        @if (userForm.get('permission')?.invalid &&
-        userForm.get('permission')?.touched) {
-        <mat-error>Selecione uma permissão</mat-error>
+        <mat-label>Descrição da Solicitação</mat-label>
+        <textarea
+          matInput
+          rows="4"
+          placeholder="Descreva detalhadamente a solicitação"
+          formControlName="description"
+        ></textarea>
+        @if (demandForm.get('description')?.invalid &&
+        demandForm.get('description')?.touched) {
+        <mat-error>A descrição deve ter pelo menos 10 caracteres</mat-error>
         }
+      </mat-form-field>
+
+      <div class="input-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Telefone</mat-label>
+          <input
+            matInput
+            type="tel"
+            placeholder="Digite o telefone do solicitante"
+            formControlName="phone"
+          />
+          @if (demandForm.get('phone')?.invalid &&
+          demandForm.get('phone')?.touched) {
+          <mat-error>Telefone inválido</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Prioridade</mat-label>
+          <mat-select formControlName="priority">
+            @for (priority of priorities; track priority.value) {
+            <mat-option [value]="priority.value">{{
+              priority.label
+            }}</mat-option>
+            }
+          </mat-select>
+          @if (demandForm.get('priority')?.invalid &&
+          demandForm.get('priority')?.touched) {
+          <mat-error>Selecione uma prioridade</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Previsão de Início (dias)</mat-label>
+          <input
+            matInput
+            type="number"
+            placeholder="Dias para início"
+            formControlName="estimatedStartDays"
+            min="1"
+          />
+          @if (demandForm.get('estimatedStartDays')?.invalid &&
+          demandForm.get('estimatedStartDays')?.touched) {
+          <mat-error>Informe o número de dias para início</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="input-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Tempo Estimado</mat-label>
+          <input
+            matInput
+            placeholder="Tempo estimado para conclusão"
+            formControlName="estimatedTime"
+          />
+          @if (demandForm.get('estimatedTime')?.invalid &&
+          demandForm.get('estimatedTime')?.touched) {
+          <mat-error>Tempo estimado é obrigatório</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Observação</mat-label>
+        <textarea
+          matInput
+          rows="3"
+          placeholder="Observações adicionais"
+          formControlName="observation"
+        ></textarea>
       </mat-form-field>
     </div>
 
@@ -76,7 +177,7 @@
         mat-raised-button
         color="primary"
         type="submit"
-        [disabled]="userForm.invalid"
+        [disabled]="demandForm.invalid"
       >
         Salvar
       </button>

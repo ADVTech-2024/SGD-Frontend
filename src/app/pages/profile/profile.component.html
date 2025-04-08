@@ -1,0 +1,53 @@
+<div class="profile-wrapper">
+  <div class="profile-info">
+    <img [src]="user.avatar" alt="Foto de perfil" class="avatar" />
+    <h2>{{ user.name }}</h2>
+    <p class="email">{{ user.email }}</p>
+  </div>
+
+  <form class="profile-form" (ngSubmit)="onSave()">
+    <h3>Informações Pessoais</h3>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nome</mat-label>
+      <input matInput [(ngModel)]="user.name" name="name" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>E-mail</mat-label>
+      <input
+        matInput
+        type="email"
+        [(ngModel)]="user.email"
+        name="email"
+        required
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Senha</mat-label>
+      <input
+        matInput
+        [type]="hidePassword ? 'password' : 'text'"
+        [(ngModel)]="user.password"
+        name="password"
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="hidePassword = !hidePassword"
+        type="button"
+      >
+        <mat-icon>{{
+          hidePassword ? "visibility_off" : "visibility"
+        }}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <div class="actions">
+      <button mat-raised-button color="primary" type="submit">
+        Salvar Alterações
+      </button>
+    </div>
+  </form>
+</div>

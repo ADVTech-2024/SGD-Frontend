@@ -9,10 +9,57 @@
           (selectionChange)="onFilterChange()"
         >
           <mat-option value="todos">Todos</mat-option>
-          <mat-option value="ti">TI</mat-option>
-          <mat-option value="rh">RH</mat-option>
-          <mat-option value="financeiro">Financeiro</mat-option>
-          <mat-option value="marketing">Marketing</mat-option>
+          <mat-option value="ti">Obras</mat-option>
+          <mat-option value="rh">Saúde</mat-option>
+          <mat-option value="financeiro">Educação</mat-option>
+          <mat-option value="marketing">Segurança</mat-option>
+          <mat-option value="marketing">Administração</mat-option>
+          <mat-option value="marketing">Meio Ambiente</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter">
+        <mat-label>Zona</mat-label>
+        <mat-select
+          [(ngModel)]="zonaSelecionada"
+          (selectionChange)="onZonaChange()"
+        >
+          <mat-option value="todas">Todas</mat-option>
+          <mat-option value="urbana">Urbana</mat-option>
+          <mat-option value="rural">Rural</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter">
+        <mat-label>Bairro</mat-label>
+        <mat-select
+          [(ngModel)]="bairroSelecionado"
+          (selectionChange)="onFilterChange()"
+          [disabled]="zonaSelecionada === 'todas'"
+        >
+          <mat-option value="todos">Todos</mat-option>
+          <mat-option
+            *ngFor="let bairro of bairrosDisponiveis"
+            [value]="bairro"
+          >
+            {{ bairro }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter">
+        <mat-label>Funcionário</mat-label>
+        <mat-select
+          [(ngModel)]="funcionarioSelecionado"
+          (selectionChange)="onFilterChange()"
+        >
+          <mat-option value="todos">Todos</mat-option>
+          <mat-option
+            *ngFor="let funcionario of funcionarios"
+            [value]="funcionario.id"
+          >
+            {{ funcionario.nome }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
 

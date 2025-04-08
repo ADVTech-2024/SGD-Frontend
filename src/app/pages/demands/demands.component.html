@@ -1,63 +1,127 @@
 <div class="demands">
-  <button mat-raised-button color="primary" (click)="createUser()">
-    Adicionar demanda
-    <mat-icon>add</mat-icon>
-  </button>
+  <div class="header-actions">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="createDemand()"
+      *ngIf="selectedRole == 'fiscal'"
+    >
+      Adicionar Demanda
+      <mat-icon>add</mat-icon>
+    </button>
 
-  <table mat-table [dataSource]="users" class="mat-elevation-z8 full-width">
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Nome</th>
-      <td mat-cell *matCellDef="let user" [class.inactive-row]="!user.active">
-        {{ user.name }}
+    <div class="role-selector">
+      <mat-form-field appearance="outline">
+        <mat-label>Visualizar como</mat-label>
+        <mat-select
+          [(ngModel)]="selectedRole"
+          (selectionChange)="onRoleChange()"
+        >
+          <mat-option *ngFor="let role of roles" [value]="role.value">
+            {{ role.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <table mat-table [dataSource]="demands" class="mat-elevation-z8 full-width">
+    <ng-container matColumnDef="requestorName">
+      <th mat-header-cell *matHeaderCellDef>Solicitante</th>
+      <td
+        mat-cell
+        *matCellDef="let demand"
+        [class.inactive-row]="!demand.active"
+      >
+        {{ demand.requestorName }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="department">
       <th mat-header-cell *matHeaderCellDef>Departamento</th>
-      <td mat-cell *matCellDef="let user" [class.inactive-row]="!user.active">
-        {{ user.department }}
+      <td
+        mat-cell
+        *matCellDef="let demand"
+        [class.inactive-row]="!demand.active"
+      >
+        {{ demand.department }}
       </td>
     </ng-container>
 
-    <ng-container matColumnDef="phone">
-      <th mat-header-cell *matHeaderCellDef>Telefone</th>
-      <td mat-cell *matCellDef="let user" [class.inactive-row]="!user.active">
-        {{ user.phone }}
+    <ng-container matColumnDef="neighborhood">
+      <th mat-header-cell *matHeaderCellDef>Bairro/Região</th>
+      <td
+        mat-cell
+        *matCellDef="let demand"
+        [class.inactive-row]="!demand.active"
+      >
+        {{ demand.neighborhood }}
+        <span
+          class="zone-badge"
+          [ngClass]="demand.zone === 'Urbana' ? 'urban' : 'rural'"
+        >
+          {{ demand.zone }}
+        </span>
       </td>
     </ng-container>
 
-    <ng-container matColumnDef="email">
-      <th mat-header-cell *matHeaderCellDef>Email</th>
-      <td mat-cell *matCellDef="let user" [class.inactive-row]="!user.active">
-        {{ user.email }}
+    <ng-container matColumnDef="priority">
+      <th mat-header-cell *matHeaderCellDef>Prioridade</th>
+      <td
+        mat-cell
+        *matCellDef="let demand"
+        [class.inactive-row]="!demand.active"
+      >
+        <span class="priority-badge priority-{{ demand.priority }}">
+          {{ getPriorityLabel(demand.priority) }}
+        </span>
       </td>
     </ng-container>
 
-    <ng-container matColumnDef="permission">
-      <th mat-header-cell *matHeaderCellDef>Permissão</th>
-      <td mat-cell *matCellDef="let user" [class.inactive-row]="!user.active">
-        {{ user.permission }}
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td
+        mat-cell
+        *matCellDef="let demand"
+        [class.inactive-row]="!demand.active"
+      >
+        <span
+          class="status-indicator"
+          [style.color]="getStatusColor(demand.status)"
+        >
+          {{ demand.status }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="registrationDate">
+      <th mat-header-cell *matHeaderCellDef>Data de criação</th>
+      <td
+        mat-cell
+        *matCellDef="let demand"
+        [class.inactive-row]="!demand.active"
+      >
+        {{ demand.registrationDate | date : "dd/MM/yyyy" }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Ações</th>
-      <td mat-cell *matCellDef="let user">
-        <button mat-icon-button color="primary" (click)="editUser(user)">
+      <td mat-cell *matCellDef="let demand">
+        <button
+          mat-icon-button
+          color="primary"
+          (click)="editDemand(demand)"
+          matTooltip="Editar demanda"
+        >
           <mat-icon>edit</mat-icon>
         </button>
         <button
           mat-icon-button
-          [color]="user.active ? 'primary' : 'warn'"
-          (click)="toggleActive(user)"
-          [matTooltip]="user.active ? 'Desativar usuário' : 'Ativar usuário'"
-        >
-          <mat-icon>{{ user.active ? "toggle_on" : "toggle_off" }}</mat-icon>
-        </button>
-        <button
-          mat-icon-button
           color="warn"
-          (click)="deleteUser(user.id, user.name)"
+          (click)="deleteDemand(demand.id, demand.requestorName)"
+          matTooltip="Excluir demanda"
+          *ngIf="selectedRole === 'fiscal'"
         >
           <mat-icon>delete</mat-icon>
         </button>
@@ -68,7 +132,7 @@
     <tr
       mat-row
       *matRowDef="let row; columns: displayedColumns"
-      [class.inactive-user-row]="!row.active"
+      [class.inactive-demand-row]="!row.active"
     ></tr>
   </table>
 </div>

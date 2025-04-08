@@ -1,27 +1,77 @@
+/* demands.component.scss */
 .demands {
     padding: 50px;
+}
 
-    table {
-        margin-top: 25px;
-    }
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.role-selector {
+    min-width: 200px;
 }
 
 .full-width {
     width: 100%;
 }
 
-button {
-    margin-bottom: 20px;
+table {
+    margin-top: 20px;
 }
 
-.inactive-row {
-    color: #999;
+.priority-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 12px;
 }
 
-.inactive-user-row {
-    background-color: rgba(0, 0, 0, 0.05);
+.priority-1 {
+    background-color: #f44336;
+    color: white;
 }
 
-.mat-mdc-row:hover {
-    background-color: rgba(0, 0, 0, 0.03);
+.priority-2 {
+    background-color: #ff9800;
+    color: white;
+}
+
+.priority-3 {
+    background-color: #2196f3;
+    color: white;
+}
+
+.priority-4 {
+    background-color: #4caf50;
+    color: white;
+}
+
+.status-indicator {
+    font-weight: 500;
+}
+
+.zone-badge {
+    margin-left: 5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+}
+
+.urban {
+    background-color: #2196f3;
+    color: white;
+}
+
+.rural {
+    background-color: #4caf50;
+    color: white;
+}
+
+.inactive-row,
+.inactive-demand-row {
+    opacity: 0.6;
+    text-decoration: line-through;
 }
